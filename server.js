@@ -1,5 +1,7 @@
 const express = require('express')
 const session = require('express-session')
+const path = require('path');
+
 
 const { db, Users } = require('./db')
 
@@ -10,6 +12,9 @@ const PORT = process.env.PORT || 4444
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
+
+
+
 
 app.use(session({
   resave: true,
@@ -23,6 +28,7 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
   const user = Users.create({
+    
     username: req.body.username,
     password: req.body.password, // NOTE: in production we save hash of password
     email: req.body.email
@@ -34,6 +40,11 @@ app.post('/signup', (req, res) => {
 app.get('/', (req, res) => {
   res.render('login')
 })
+app.get('/login', (req, res) => {
+  res.render('login')
+})
+
+
 
 app.post('/login', async (req, res) => {
   const user = await Users.findOne({where: { username: req.body.username }})
