@@ -87,7 +87,7 @@ app.get('/logout', (req, res) => {
   res.redirect('/login')
 })
 
-db.sync({force:true})
+db.sync()
   .then(() => {
     app.listen(PORT, () => console.log(`started on http://localhost:${PORT}`))
   })
