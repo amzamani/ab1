@@ -28,13 +28,15 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
   const user = Users.create({
-    
+
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
     username: req.body.username,
     password: req.body.password, // NOTE: in production we save hash of password
     email: req.body.email
   })
 
-  res.render("newuser")
+  res.render("newuser",{user})
 })
 
 app.get('/', (req, res) => {
