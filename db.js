@@ -18,11 +18,11 @@ const Users = db.define('user', {
   },
   firstname: {
     type: Sequelize.DataTypes.STRING(30),
-   
+    
   },
   lastname: {
     type: Sequelize.DataTypes.STRING(30),
-  
+    
   },
   email: {
     type: Sequelize.DataTypes.STRING(100),

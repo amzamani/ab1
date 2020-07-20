@@ -3,8 +3,13 @@ const session = require('express-session')
 const path = require('path');
 
 
+
+
+
 const { db, Users } = require('./db')
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const app = express()
 
 const PORT = process.env.PORT || 4444
@@ -27,16 +32,23 @@ app.get('/signup', (req, res) => {
 })
 
 app.post('/signup', (req, res) => {
+  // bcrypt.hash('myPassword', 10, function(err, hash) {
+  //   // Store hash in database
+  // });
+  
+  bcrypt.hash(req.body.password, saltRounds, function (err,   hash) {
   const user = Users.create({
 
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     username: req.body.username,
-    password: req.body.password, // NOTE: in production we save hash of password
+    password: hash, // NOTE: in production we save hash of password
     email: req.body.email
   })
+});
 
-  res.render("newuser",{user})
+
+  res.render("newuser")
 })
 
 app.get('/', (req, res) => {
@@ -53,12 +65,13 @@ app.post('/login', async (req, res) => {
   if (!user) {
     return res.status(404).render('login', { error: 'No such username found' })
   }
-
-  if (user.password !== req.body.password) {
-    return res.status(401).render('login', { error: 'Incorrect password' })
-  }
-  req.session.userId = user.id
-  res.redirect('/profile')  
+  bcrypt.compare(req.body.password, user.password, function (err, result) {
+    if (result !==true ) {
+      return res.status(401).render('login', { error: 'Incorrect password' })
+    }
+    req.session.userId = user.id
+    res.redirect('/profile')
+  })
 })
 
 app.get('/profile', async (req, res) => {
@@ -74,7 +87,7 @@ app.get('/logout', (req, res) => {
   res.redirect('/login')
 })
 
-db.sync()
+db.sync({force:true})
   .then(() => {
     app.listen(PORT, () => console.log(`started on http://localhost:${PORT}`))
   })
