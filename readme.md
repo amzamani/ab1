@@ -1,4 +1,4 @@
-##Using Sqlite3 on heroku consequences
+## Using Sqlite3 on heroku consequences
 
 SQLite runs in memory, and backs up its data store in files on disk. While this strategy works well for development, Heroku’s Cedar stack has an ephemeral filesystem. You can write to it, and you can read from it, but the contents will be cleared periodically. If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.
 
